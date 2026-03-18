@@ -1115,6 +1115,19 @@ export async function performLLMExtract(
   return document;
 }
 
+/**
+ * Strips noisy patterns before LLM clean: literal (URL), markdown images ![alt](url),
+ * and lines that are only "=" (e.g. ==== under product images).
+ */
+function stripUrlPatternsBeforeLlmClean(markdown: string): string {
+  let s = markdown.replace(/(?<!\])\(\s*URL\s*\)/gi, "");
+  // Markdown images: ![alt](https://...) — URL must not contain unencoded )
+  s = s.replace(/!\[[^\]]*\]\([^)\r\n]+\)/g, "");
+  // Decorative separator lines (====, ======, …)
+  s = s.replace(/^\s*=+\s*$/gim, "");
+  return s.replace(/\n{3,}/g, "\n\n").trimEnd();
+}
+
 export async function performCleanContent(
   meta: Meta,
   document: Document,
@@ -1137,8 +1150,9 @@ export async function performCleanContent(
     return document;
   }
 
+  const markdownForLlm = stripUrlPatternsBeforeLlmClean(document.markdown);
   const trimOutput = trimToTokenLimit(
-    document.markdown,
+    markdownForLlm,
     400000,
     "gpt-5-nano",
     document.warning,
