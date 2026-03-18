@@ -1184,7 +1184,7 @@ export async function performCleanContent(
     options: {
       systemPrompt: `You are a content cleaning expert. Your task is to take the provided markdown content from a web page and return ONLY the meaningful semantic content. Remove all of the following:
 - Navigation menus and navigation links
-- Cookie banners and consent notices
+- Cookie banners, cookie consent notices, and ALL cookie-related UI: cookie policy text, "cookie policy" or "cookie settings" links, cookie preference dialogs (including text like "기본 설정", "모두 허용", "Decline", "필수 쿠키만", "Accept all", "Manage preferences"), and any tables or lists that list individual cookies (e.g. columns like Name, Provider, Domain, Path, Type, Retention, Purpose). Remove the entire block of cookie consent/settings content from the first mention of cookies or consent through the end of that section (including "Cookies details" and similar).
 - Advertisement content
 - Sidebar content (related articles, popular posts, etc.)
 - Footer links and footer content
