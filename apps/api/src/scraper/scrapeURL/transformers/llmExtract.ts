@@ -236,6 +236,8 @@ export function calculateCost(
     "openai/gpt-5-mini": { input_cost: 0.25, output_cost: 2 },
     "gpt-5-nano": { input_cost: 0.05, output_cost: 0.4 },
     "openai/gpt-5-nano": { input_cost: 0.05, output_cost: 0.4 },
+    "gpt-5.4-nano": { input_cost: 0.2, output_cost: 1.25 },
+    "openai/gpt-5.4-nano": { input_cost: 0.2, output_cost: 1.25 },
     "google/gemini-2.0-flash-001": { input_cost: 0.15, output_cost: 0.6 },
     "gemini-2.0-flash": { input_cost: 0.15, output_cost: 0.6 },
     "deepseek/deepseek-r1": { input_cost: 0.55, output_cost: 2.19 },
@@ -713,6 +715,7 @@ export async function generateCompletions({
           },
         },
         openai: {
+          ...((providerOptions as any)?.openai || {}),
           strictJsonSchema: true,
         },
       },
@@ -1200,8 +1203,8 @@ Return the cleaned markdown content preserving the original markdown formatting.
     },
     markdown: trimOutput.text,
     previousWarning: document.warning,
-    model: getModel("gpt-5-nano", "openai"),
-    retryModel: getModel("gpt-5-mini", "openai"),
+    model: getModel("gpt-5.4-nano", "openai"),
+    retryModel: getModel("gpt-5.4-nano", "openai"),
     costTrackingOptions: {
       costTracking: meta.costTracking,
       metadata: {
@@ -1216,7 +1219,10 @@ Return the cleaned markdown content preserving the original markdown formatting.
     },
     providerOptions: {
       openai: {
-        reasoning: { effort: "minimal" },
+        reasoning: { effort: "none" },
+        store: false,
+        // verbosity only: generateObject needs JSON schema output, not text.format type "text".
+        text: { verbosity: "low" },
       },
     } as any,
   };
