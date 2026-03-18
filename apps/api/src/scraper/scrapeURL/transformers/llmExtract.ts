@@ -1136,8 +1136,8 @@ export async function performCleanContent(
 
   const trimOutput = trimToTokenLimit(
     document.markdown,
-    120000,
-    "gpt-4o-mini",
+    240000,
+    "gpt-4.1-nano",
     document.warning,
   );
 
@@ -1200,11 +1200,8 @@ Return the cleaned markdown content preserving the original markdown formatting.
     },
     markdown: trimOutput.text,
     previousWarning: document.warning,
-    model: (() => {
-      const selection = selectModelForSchema(cleanContentSchema);
-      return getModel(selection.modelName, "openai");
-    })(),
-    retryModel: getModel("gpt-4.1", "openai"),
+    model: getModel("gpt-4.1-nano", "openai"),
+    retryModel: getModel("gpt-4.1-mini", "openai"),
     costTrackingOptions: {
       costTracking: meta.costTracking,
       metadata: {
